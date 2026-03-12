@@ -35,13 +35,20 @@ window.onload = function () {
 
       let diffDays = Math.ceil((hearing - today) / (1000 * 60 * 60 * 24));
 
-      if (diffDays <= 7 && diffDays >= 0) {
-        statusCell.innerHTML = "⚠ Hearing in " + diffDays + " days";
+      if (diffDays === 0) {
+        statusCell.innerHTML = "⚠ Hearing Today";
         statusCell.style.color = "red";
-
-        upcoming++;
+      } else if (diffDays === 1) {
+        statusCell.innerHTML = "⚠ Hearing Tomorrow";
+        statusCell.style.color = "red";
+      } else if (diffDays <= 3) {
+        statusCell.innerHTML = "⚠ Hearing in " + diffDays + " Days";
+        statusCell.style.color = "orange";
+      } else if (diffDays <= 7) {
+        statusCell.innerHTML = "Hearing in " + diffDays + " Days";
+        statusCell.style.color = "#1F4E79";
       } else {
-        statusCell.innerHTML = "OK";
+        statusCell.innerHTML = "Scheduled";
       }
 
       let actionCell = row.insertCell(5);
@@ -117,8 +124,18 @@ window.addEventListener("load", function () {
       }
 
       let status = row.insertCell(4);
-      status.innerHTML = "⚠ Hearing in " + diffDays + " days";
-      status.style.color = "red";
+      if (diffDays === 0) {
+        status.innerHTML = "⚠ Hearing Today";
+        status.style.color = "red";
+      } else if (diffDays === 1) {
+        status.innerHTML = "⚠ Hearing Tomorrow";
+        status.style.color = "red";
+      } else if (diffDays <= 3) {
+        status.innerHTML = "⚠ Hearing in " + diffDays + " Days";
+        status.style.color = "orange";
+      } else {
+        status.innerHTML = "Hearing in " + diffDays + " Days";
+      }
     }
   });
 });
