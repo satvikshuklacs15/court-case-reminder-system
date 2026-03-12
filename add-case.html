@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Add Case</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <div class="navbar">
+      <h2>Court Case Reminder System</h2>
+
+      <div class="menu">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="add-case.html">Add Case</a>
+        <a href="upcoming.html">Upcoming Hearings</a>
+        <a href="index.html">Logout</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h3>Add New Case</h3>
+
+      <label>Case Number</label>
+      <input type="text" id="caseNumber" />
+
+      <label>Department</label>
+      <select id="department">
+        <option>Revenue</option>
+        <option>Police</option>
+        <option>Education</option>
+        <option>Health</option>
+        <option>Public Works</option>
+      </select>
+
+      <label>Next Hearing Date</label>
+      <input type="date" id="hearingDate" />
+
+      <label>Case Copy (Prototype Only)</label>
+      <input type="file" id="caseFile" />
+
+      <br /><br />
+
+      <button onclick="addCase()">Submit Case</button>
+    </div>
+
+    <script src="js/app.js"></script>
+    <footer>
+      <p>District Court Monitoring System | Developed for Administrative Use</p>
+    </footer>
+  </body>
+</html>
