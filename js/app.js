@@ -13,6 +13,7 @@ window.onload = function () {
   if (totalCases) totalCases.innerText = cases.length;
 
   let upcoming = 0;
+  let urgentHearings = [];
 
   if (table) {
     cases.forEach((c, index) => {
@@ -35,6 +36,10 @@ window.onload = function () {
 
       let diffDays = Math.ceil((hearing - today) / (1000 * 60 * 60 * 24));
 
+      if (diffDays <= 7 && diffDays >= 0) {
+        upcoming++;
+      }
+
       if (diffDays === 0) {
         statusCell.innerHTML = "⚠ Hearing Today";
         statusCell.style.color = "red";
@@ -54,10 +59,31 @@ window.onload = function () {
       let actionCell = row.insertCell(5);
 
       actionCell.innerHTML = `<button onclick="deleteCase(${index})">Delete</button>`;
+
+      if (diffDays === 0) {
+        urgentHearings.push("Case " + c.number + " — Hearing Today");
+      }
+
+      if (diffDays === 1) {
+        urgentHearings.push("Case " + c.number + " — Hearing Tomorrow");
+      }
     });
   }
 
   if (upcomingCount) upcomingCount.innerText = upcoming;
+
+  let popup = document.getElementById("hearingPopup");
+  let hearingList = document.getElementById("hearingList");
+
+  if (urgentHearings.length > 0 && popup) {
+    urgentHearings.forEach((h) => {
+      let li = document.createElement("li");
+      li.innerText = h;
+      hearingList.appendChild(li);
+    });
+
+    popup.style.display = "flex";
+  }
 };
 function addCase() {
   let caseNumber = document.getElementById("caseNumber").value;
@@ -147,4 +173,7 @@ function deleteCase(index) {
   localStorage.setItem("cases", JSON.stringify(cases));
 
   location.reload();
+}
+function closePopup(){
+document.getElementById("hearingPopup").style.display="none";
 }
