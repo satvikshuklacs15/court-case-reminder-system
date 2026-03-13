@@ -1,6 +1,8 @@
 <!doctype html>
 <html>
   <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <title>Add Case</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
@@ -33,7 +35,8 @@
       </select>
 
       <label>Next Hearing Date</label>
-      <input type="date" id="hearingDate" />
+      <!-- <input type="date" id="hearingDate" /> -->
+      <input type="text" id="hearingDate" placeholder="Select Date.." />
 
       <label>Case Copy (Prototype Only)</label>
       <input type="file" id="caseFile" />
@@ -45,7 +48,13 @@
 
     <script src="js/app.js"></script>
     <footer>
-      <p>District Court Monitoring System | Developed for Administrative Use</p>
+      <p>District Court Monitoring System, Amroha | Developed for Administrative Use</p>
     </footer>
+    <script>
+    flatpickr("#hearingDate", {
+      dateFormat: "d/m/Y", // This forces the dd/mm/yyyy format
+      allowInput: true     // Allows users to type it in manually if they want
+    });
+    </script>
   </body>
 </html>
