@@ -1,3 +1,5 @@
+let sortAscending = true;
+
 function login() {
   window.location.href = "dashboard.html";
 }
@@ -176,4 +178,50 @@ function deleteCase(index) {
 }
 function closePopup(){
 document.getElementById("hearingPopup").style.display="none";
+}
+
+function searchCase(){
+
+let input = document.getElementById("searchCase").value.toLowerCase();
+
+let table = document.getElementById("caseTable");
+
+let rows = table.getElementsByTagName("tr");
+
+for(let i=0;i<rows.length;i++){
+
+let caseNumber = rows[i].cells[0].innerText.toLowerCase();
+
+if(caseNumber.includes(input)){
+rows[i].style.display="";
+}else{
+rows[i].style.display="none";
+}
+
+}
+
+}
+function sortByDate(){
+
+let table = document.getElementById("caseTable");
+
+let rows = Array.from(table.rows);
+
+rows.sort(function(a,b){
+
+let dateA = new Date(a.cells[2].innerText);
+let dateB = new Date(b.cells[2].innerText);
+
+if(sortAscending){
+return dateA - dateB;
+}else{
+return dateB - dateA;
+}
+
+});
+
+rows.forEach(row => table.appendChild(row));
+
+sortAscending = !sortAscending;
+
 }

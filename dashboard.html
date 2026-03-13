@@ -33,12 +33,21 @@
     <div class="container">
       <h3>Case Dashboard</h3>
 
+      <input 
+type="text" 
+id="searchCase" 
+placeholder="Search by Case Number..."
+onkeyup="searchCase()" 
+style="margin-bottom:15px; padding:8px; width:250px;">
+
       <table>
         <thead>
           <tr>
             <th>Case Number</th>
             <th>Department</th>
-            <th>Hearing Date</th>
+            <th onclick="sortByDate()" style="cursor:pointer">
+Hearing Date ⬍
+</th>
             <th>Case File</th>
             <th>Status</th>
             <th>Action</th>
