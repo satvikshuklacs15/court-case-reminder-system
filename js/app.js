@@ -31,7 +31,12 @@ window.onload = function () {
         row.insertCell(3).innerText = "No File";
       }
 
-      let statusCell = row.insertCell(4);
+      let remarksCell = row.insertCell(4);
+
+      remarksCell.innerHTML = `<input type="text" id="remarks-${index}" value="${c.remarks || ""}" style="width:120px;">
+<button onclick="saveRemarks(${index})">Save</button>`;
+
+      let statusCell = row.insertCell(5);
 
       let today = new Date();
       let hearing = new Date(c.date);
@@ -41,8 +46,10 @@ window.onload = function () {
       if (diffDays <= 7 && diffDays >= 0) {
         upcoming++;
       }
-
-      if (diffDays === 0) {
+      if (diffDays < 0) {
+        statusCell.innerHTML = "Hearing date passed";
+        statusCell.style.color = "gray";
+      } else if (diffDays === 0) {
         statusCell.innerHTML = "⚠ Hearing Today";
         statusCell.style.color = "red";
       } else if (diffDays === 1) {
@@ -58,7 +65,7 @@ window.onload = function () {
         statusCell.innerHTML = "Scheduled";
       }
 
-      let actionCell = row.insertCell(5);
+      let actionCell = row.insertCell(6);
 
       actionCell.innerHTML = `<button onclick="deleteCase(${index})">Delete</button>`;
 
@@ -176,52 +183,57 @@ function deleteCase(index) {
 
   location.reload();
 }
-function closePopup(){
-document.getElementById("hearingPopup").style.display="none";
+function closePopup() {
+  document.getElementById("hearingPopup").style.display = "none";
 }
 
-function searchCase(){
+function searchCase() {
+  let input = document.getElementById("searchCase").value.toLowerCase();
 
-let input = document.getElementById("searchCase").value.toLowerCase();
+  let table = document.getElementById("caseTable");
 
-let table = document.getElementById("caseTable");
+  let rows = table.getElementsByTagName("tr");
 
-let rows = table.getElementsByTagName("tr");
+  for (let i = 0; i < rows.length; i++) {
+    let caseNumber = rows[i].cells[0].innerText.toLowerCase();
 
-for(let i=0;i<rows.length;i++){
-
-let caseNumber = rows[i].cells[0].innerText.toLowerCase();
-
-if(caseNumber.includes(input)){
-rows[i].style.display="";
-}else{
-rows[i].style.display="none";
+    if (caseNumber.includes(input)) {
+      rows[i].style.display = "";
+    } else {
+      rows[i].style.display = "none";
+    }
+  }
 }
+function sortByDate() {
+  let table = document.getElementById("caseTable");
 
+  let rows = Array.from(table.rows);
+
+  rows.sort(function (a, b) {
+    let dateA = new Date(a.cells[2].innerText);
+    let dateB = new Date(b.cells[2].innerText);
+
+    if (sortAscending) {
+      return dateA - dateB;
+    } else {
+      return dateB - dateA;
+    }
+  });
+
+  rows.forEach((row) => table.appendChild(row));
+
+  sortAscending = !sortAscending;
 }
+function saveRemarks(index) {
 
-}
-function sortByDate(){
+  let cases = JSON.parse(localStorage.getItem("cases")) || [];
 
-let table = document.getElementById("caseTable");
+  let remarkText = document.getElementById("remarks-" + index).value;
 
-let rows = Array.from(table.rows);
+  cases[index].remarks = remarkText;
 
-rows.sort(function(a,b){
+  localStorage.setItem("cases", JSON.stringify(cases));
 
-let dateA = new Date(a.cells[2].innerText);
-let dateB = new Date(b.cells[2].innerText);
-
-if(sortAscending){
-return dateA - dateB;
-}else{
-return dateB - dateA;
-}
-
-});
-
-rows.forEach(row => table.appendChild(row));
-
-sortAscending = !sortAscending;
+  alert("Remarks saved successfully");
 
 }
