@@ -22,8 +22,9 @@
     <div class="container">
       <h3>Add New Case</h3>
 
-      <label>Case Number</label>
-      <input type="text" id="caseNumber" />
+      <!-- <label>Case Number</label> -->
+      <label>Case Number <span style="color: red;">*</span></label>
+      <input type="text" id="caseNumber" required/>
 
       <label>Department</label>
       <select id="department">
@@ -34,9 +35,11 @@
         <option>Public Works</option>
       </select>
 
-      <label>Next Hearing Date</label>
+      <!-- <label>Next Hearing Date</label> -->
+      <label>Next Hearing Date <span style="color: red;">*</span></label>
       <!-- <input type="date" id="hearingDate" /> -->
-      <input type="text" id="hearingDate" placeholder="Select Date.." />
+      <!-- <input type="text" id="hearingDate" placeholder="Select Date.." /> -->
+      <input type="text" id="hearingDate" placeholder="Select Date.." required />
 
       <label>Case Copy (Prototype Only)</label>
       <input type="file" id="caseFile" />

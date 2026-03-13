@@ -24,9 +24,31 @@ window.onload = function () {
       row.insertCell(0).innerText = c.number;
       row.insertCell(1).innerText = c.department;
       row.insertCell(2).innerText = c.date;
+      // if (c.fileData) {
+      //   row.insertCell(3).innerHTML =
+      //     `<a href="${c.fileData}" download="${c.fileName}">Download PDF</a>`;
+      // } else {
+      //   row.insertCell(3).innerText = "No File";
+      // }
+      // --- REPLACE THIS BLOCK IN window.onload ---
+      // if (c.fileData) {
+      //   row.insertCell(3).innerHTML = `
+      //     <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+      //       <a href="${c.fileData}" target="_blank" style="text-decoration: none; color: #1F4E79; font-weight: bold;">View</a>
+      //       <span style="color: #ccc;">|</span>
+      //       <a href="${c.fileData}" download="${c.fileName}" style="text-decoration: none; color: #28a745; font-weight: bold;">Download</a>
+      //     </div>`;
+      // } else {
+      //     row.insertCell(3).innerText = "No File";
+      // }
+
       if (c.fileData) {
-        row.insertCell(3).innerHTML =
-          `<a href="${c.fileData}" download="${c.fileName}">Download PDF</a>`;
+        row.insertCell(3).innerHTML = `
+          <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+            <span onclick="viewFile(${index})" style="cursor: pointer; color: #1F4E79; font-weight: bold;">View</span>
+            <span style="color: #ccc;">|</span>
+            <a href="${c.fileData}" download="${c.fileName}" style="text-decoration: none; color: #28a745; font-weight: bold;">Download</a>
+          </div>`;
       } else {
         row.insertCell(3).innerText = "No File";
       }
@@ -39,7 +61,8 @@ window.onload = function () {
       let statusCell = row.insertCell(5);
 
       let today = new Date();
-      let hearing = new Date(c.date);
+      // let hearing = new Date(c.date);
+      let hearing = parseIndianDate(c.date);
 
       let diffDays = Math.ceil((hearing - today) / (1000 * 60 * 60 * 24));
 
@@ -94,10 +117,60 @@ window.onload = function () {
     popup.style.display = "flex";
   }
 };
+
+// function addCase() {
+//   let caseNumber = document.getElementById("caseNumber").value;
+//   let department = document.getElementById("department").value;
+//   let hearingDate = document.getElementById("hearingDate").value;
+
+//   let fileInput = document.getElementById("caseFile");
+//   let file = fileInput.files[0];
+
+//   let reader = new FileReader();
+
+//   reader.onload = function (e) {
+//     let caseData = {
+//       number: caseNumber,
+//       department: department,
+//       date: hearingDate,
+//       fileName: file ? file.name : "No File",
+//       fileData: file ? e.target.result : null,
+//     };
+
+//     let cases = JSON.parse(localStorage.getItem("cases")) || [];
+
+//     cases.push(caseData);
+
+//     localStorage.setItem("cases", JSON.stringify(cases));
+
+//     alert("Case Added Successfully");
+
+//     window.location.href = "dashboard.html";
+//   };
+
+//   if (file) {
+//     reader.readAsDataURL(file);
+//   } else {
+//     reader.onload({ target: { result: null } });
+//   }
+// }
+
 function addCase() {
   let caseNumber = document.getElementById("caseNumber").value;
   let department = document.getElementById("department").value;
   let hearingDate = document.getElementById("hearingDate").value;
+
+  // --- UPDATED VALIDATION BLOCK ---
+  if (!caseNumber.trim()) {
+    alert("Please enter a Case Number.");
+    return;
+  }
+  
+  if (!hearingDate.trim()) {
+    alert("Please select a Hearing Date.");
+    return;
+  }
+  // --------------------------------
 
   let fileInput = document.getElementById("caseFile");
   let file = fileInput.files[0];
@@ -114,13 +187,10 @@ function addCase() {
     };
 
     let cases = JSON.parse(localStorage.getItem("cases")) || [];
-
     cases.push(caseData);
-
     localStorage.setItem("cases", JSON.stringify(cases));
 
     alert("Case Added Successfully");
-
     window.location.href = "dashboard.html";
   };
 
@@ -140,8 +210,11 @@ window.addEventListener("load", function () {
 
   let today = new Date();
 
-  cases.forEach((c) => {
-    let hearing = new Date(c.date);
+  // cases.forEach((c) => {
+  cases.forEach((c, index) => {
+    if (!c.date || c.date.trim() === "") return;
+    // let hearing = new Date(c.date);
+    let hearing = parseIndianDate(c.date);
 
     let diffDays = Math.ceil((hearing - today) / (1000 * 60 * 60 * 24));
 
@@ -151,9 +224,30 @@ window.addEventListener("load", function () {
       row.insertCell(0).innerText = c.number;
       row.insertCell(1).innerText = c.department;
       row.insertCell(2).innerText = c.date;
+      // if (c.fileData) {
+      //   row.insertCell(3).innerHTML =
+      //     `<a href="${c.fileData}" download="${c.fileName}">Download PDF</a>`;
+      // } else {
+      //   row.insertCell(3).innerText = "No File";
+      // }
+      // --- REPLACE THIS BLOCK IN the Upcoming Table listener ---
+      // if (c.fileData) {
+      //   row.insertCell(3).innerHTML = `
+      //     <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+      //       <a href="${c.fileData}" target="_blank" style="text-decoration: none; color: #1F4E79; font-weight: bold;">View</a>
+      //       <span style="color: #ccc;">|</span>
+      //       <a href="${c.fileData}" download="${c.fileName}" style="text-decoration: none; color: #28a745; font-weight: bold;">Download</a>
+      //     </div>`;
+      // } else {
+      //   row.insertCell(3).innerText = "No File";
+      // }
       if (c.fileData) {
-        row.insertCell(3).innerHTML =
-          `<a href="${c.fileData}" download="${c.fileName}">Download PDF</a>`;
+        row.insertCell(3).innerHTML = `
+          <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+            <span onclick="viewFile(${index})" style="cursor: pointer; color: #1F4E79; font-weight: bold;">View</span>
+            <span style="color: #ccc;">|</span>
+            <a href="${c.fileData}" download="${c.fileName}" style="text-decoration: none; color: #28a745; font-weight: bold;">Download</a>
+          </div>`;
       } else {
         row.insertCell(3).innerText = "No File";
       }
@@ -210,8 +304,10 @@ function sortByDate() {
   let rows = Array.from(table.rows);
 
   rows.sort(function (a, b) {
-    let dateA = new Date(a.cells[2].innerText);
-    let dateB = new Date(b.cells[2].innerText);
+    // let dateA = new Date(a.cells[2].innerText);
+    // let dateB = new Date(b.cells[2].innerText);
+    let dateA = parseIndianDate(a.cells[2].innerText);
+    let dateB = parseIndianDate(b.cells[2].innerText);
 
     if (sortAscending) {
       return dateA - dateB;
@@ -236,4 +332,48 @@ function saveRemarks(index) {
 
   alert("Remarks saved successfully");
 
+}
+
+function viewFile(index) {
+  let cases = JSON.parse(localStorage.getItem("cases")) || [];
+  let caseData = cases[index];
+
+  if (!caseData || !caseData.fileData) {
+    alert("File not found!");
+    return;
+  }
+
+  // Base64 ko Blob mein convert karein
+  const base64Data = caseData.fileData;
+  const parts = base64Data.split(';base64,');
+  const contentType = parts[0].split(':')[1];
+  const raw = window.atob(parts[1]);
+  const uInt8Array = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+  const blob = new Blob([uInt8Array], { type: contentType });
+  const url = URL.createObjectURL(blob);
+
+  // Naya tab open karke usme PDF embed karein (Isse refresh nahi karna padega)
+  const newWindow = window.open();
+  newWindow.document.write(`
+    <html>
+      <head><title>Viewing Case: ${caseData.number}</title></head>
+      <body style="margin:0;">
+        <embed src="${url}" width="100%" height="100%" type="${contentType}">
+      </body>
+    </html>
+  `);
+}
+
+function parseIndianDate(dateStr) {
+    if (!dateStr) return new Date();
+    // If the date contains '/', split by day, month, year
+    if (dateStr.includes('/')) {
+        const [day, month, year] = dateStr.split('/');
+        return new Date(year, month - 1, day);
+    }
+    // Fallback for the old YYYY-MM-DD format
+    return new Date(dateStr);
 }

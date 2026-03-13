@@ -135,6 +135,12 @@ text-align:center;
 color:#d9534f;
 }
 
+.required-star {
+  color: red;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
 .popup-content ul{
 text-align:left;
 margin-top:15px;
