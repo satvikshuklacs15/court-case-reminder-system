@@ -3,6 +3,14 @@ body{
     background-color:#f2f2f2;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+
 .login-container{
     width:350px;
     margin:120px auto;
@@ -42,6 +50,7 @@ button{
 
 .container{
     padding:30px;
+    flex: 1;
 }
 
 table{
@@ -140,3 +149,18 @@ border:none;
 border-radius:4px;
 cursor:pointer;
 }
+
+footer {
+    background-color: #1a4a7a; /* Your blue color */
+    color: white;
+    text-align: center;
+    padding: 15px 0; /* Adds space above and below the text */
+    width: 100%;
+}
+
+footer p {
+    margin: 0; /* Removes default paragraph margins that cause alignment issues */
+}
+
+/* Ensure the dashboard heading and search bar have no extra left spacing */
+/*  */
