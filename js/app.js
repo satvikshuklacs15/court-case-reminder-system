@@ -1,18 +1,31 @@
+const supabaseUrl = "https://jebiygsmwibdtlbrrjjx.supabase.co";
+const supabaseKey = "sb_publishable_RhnyqXE5j3I3nD8I4_OYNQ_PUbTX6hO";
+
+const { createClient } = supabase;
+
+const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
 let sortAscending = true;
 
-function login() {
+window.login = function () {
   window.location.href = "dashboard.html";
-}
+};
 
-window.onload = function () {
-  let cases = JSON.parse(localStorage.getItem("cases")) || [];
+window.onload = async function () {
+  let { data: cases, error } = await supabaseClient.from("cases").select("*");
+
+  if (error) {
+    console.log(error);
+    alert("Error loading cases");
+    return;
+  }
 
   let table = document.getElementById("caseTable");
 
   let totalCases = document.getElementById("totalCases");
   let upcomingCount = document.getElementById("upcomingCount");
 
-  if (totalCases) totalCases.innerText = cases.length;
+  if (cases && totalCases) totalCases.innerText = cases.length;
 
   let upcoming = 0;
   let urgentHearings = [];
@@ -21,25 +34,29 @@ window.onload = function () {
     cases.forEach((c, index) => {
       let row = table.insertRow();
 
-      row.insertCell(0).innerText = c.number;
+      row.insertCell(0).innerText = c.case_number;
       row.insertCell(1).innerText = c.department;
-      row.insertCell(2).innerText = c.date;
-      if (c.fileData) {
+      row.insertCell(2).innerText = c.hearing_date;
+      if (c.file_url) {
+        const { data } = supabaseClient.storage
+          .from("case-files")
+          .getPublicUrl(c.file_url);
+
         row.insertCell(3).innerHTML =
-          `<a href="${c.fileData}" download="${c.fileName}">Download PDF</a>`;
+          `<a href="${data.publicUrl}" target="_blank">Download PDF</a>`;
       } else {
         row.insertCell(3).innerText = "No File";
       }
 
       let remarksCell = row.insertCell(4);
 
-      remarksCell.innerHTML = `<input type="text" id="remarks-${index}" value="${c.remarks || ""}" style="width:120px;">
-<button onclick="saveRemarks(${index})">Save</button>`;
+      remarksCell.innerHTML = `<input type="text" id="remarks-${c.id}" value="${c.remarks || ""}" style="width:120px;">
+<button onclick="saveRemarks(${c.id})">Save</button>`;
 
       let statusCell = row.insertCell(5);
 
       let today = new Date();
-      let hearing = new Date(c.date);
+      let hearing = new Date(c.hearing_date);
 
       let diffDays = Math.ceil((hearing - today) / (1000 * 60 * 60 * 24));
 
@@ -67,14 +84,14 @@ window.onload = function () {
 
       let actionCell = row.insertCell(6);
 
-      actionCell.innerHTML = `<button onclick="deleteCase(${index})">Delete</button>`;
+      actionCell.innerHTML = `<button onclick="deleteCase(${c.id})">Delete</button>`;
 
       if (diffDays === 0) {
-        urgentHearings.push("Case " + c.number + " — Hearing Today");
+        urgentHearings.push("Case " + c.case_number + " — Hearing Today");
       }
 
       if (diffDays === 1) {
-        urgentHearings.push("Case " + c.number + " — Hearing Tomorrow");
+        urgentHearings.push("Case " + c.case_number + " — Hearing Tomorrow");
       }
     });
   }
@@ -94,66 +111,89 @@ window.onload = function () {
     popup.style.display = "flex";
   }
 };
-function addCase() {
+async function addCase() {
   let caseNumber = document.getElementById("caseNumber").value;
   let department = document.getElementById("department").value;
   let hearingDate = document.getElementById("hearingDate").value;
 
+  if (!caseNumber || !hearingDate) {
+    alert("Please fill all required fields");
+    return;
+  }
+  
   let fileInput = document.getElementById("caseFile");
   let file = fileInput.files[0];
 
-  let reader = new FileReader();
+  let fileUrl = null;
 
-  reader.onload = function (e) {
-    let caseData = {
-      number: caseNumber,
-      department: department,
-      date: hearingDate,
-      fileName: file ? file.name : "No File",
-      fileData: file ? e.target.result : null,
-    };
-
-    let cases = JSON.parse(localStorage.getItem("cases")) || [];
-
-    cases.push(caseData);
-
-    localStorage.setItem("cases", JSON.stringify(cases));
-
-    alert("Case Added Successfully");
-
-    window.location.href = "dashboard.html";
-  };
-
+  // Upload file to Supabase storage
   if (file) {
-    reader.readAsDataURL(file);
-  } else {
-    reader.onload({ target: { result: null } });
+    const { data, error } = await supabaseClient.storage
+      .from("case-files")
+     .upload("cases/" + Date.now() + "_" + file.name, file);
+
+    if (error) {
+      alert("File upload failed");
+      return;
+    }
+
+    fileUrl = data.path;
   }
+
+  // Insert case into database
+  const { error } = await supabaseClient.from("cases").insert([
+    {
+      case_number: caseNumber,
+      department: department,
+      hearing_date: hearingDate,
+      file_url: fileUrl,
+    },
+  ]);
+
+  if (error) {
+    alert("Error saving case");
+    console.log(error);
+    return;
+  }
+
+  alert("Case Added Successfully");
+
+  window.location.href = "dashboard.html";
 }
 
-window.addEventListener("load", function () {
+window.addEventListener("load", async function () {
   let upcomingTable = document.getElementById("upcomingTable");
 
   if (!upcomingTable) return;
 
-  let cases = JSON.parse(localStorage.getItem("cases")) || [];
+  let { data: cases, error } = await supabaseClient.from("cases").select("*");
+
+  if (error) {
+    console.log(error);
+    alert("Error loading cases");
+    return;
+  }
 
   let today = new Date();
 
   cases.forEach((c) => {
-    let hearing = new Date(c.date);
+    let hearing = new Date(c.hearing_date);
 
     let diffDays = Math.ceil((hearing - today) / (1000 * 60 * 60 * 24));
 
     if (diffDays <= 7 && diffDays >= 0) {
       let row = upcomingTable.insertRow();
 
-      row.insertCell(0).innerText = c.number;
+      row.insertCell(0).innerText = c.case_number;
       row.insertCell(1).innerText = c.department;
-      row.insertCell(2).innerText = c.date;
-      if (c.fileData) {
+      row.insertCell(2).innerText = c.hearing_date;
+      if (c.file_url) {
+        const { data } = supabaseClient.storage
+          .from("case-files")
+          .getPublicUrl(c.file_url);
+
         row.insertCell(3).innerHTML =
-          `<a href="${c.fileData}" download="${c.fileName}">Download PDF</a>`;
+          `<a href="${data.publicUrl}" target="_blank">Download PDF</a>`;
       } else {
         row.insertCell(3).innerText = "No File";
       }
@@ -174,12 +214,17 @@ window.addEventListener("load", function () {
     }
   });
 });
-function deleteCase(index) {
-  let cases = JSON.parse(localStorage.getItem("cases")) || [];
+async function deleteCase(id) {
+  const { error } = await supabaseClient
+    .from("cases")
+    .delete()
+    .eq("id", id);
 
-  cases.splice(index, 1);
-
-  localStorage.setItem("cases", JSON.stringify(cases));
+  if (error) {
+    alert("Error deleting case");
+    console.log(error);
+    return;
+  }
 
   location.reload();
 }
@@ -224,16 +269,19 @@ function sortByDate() {
 
   sortAscending = !sortAscending;
 }
-function saveRemarks(index) {
+async function saveRemarks(id) {
+  let remarkText = document.getElementById("remarks-" + id).value;
 
-  let cases = JSON.parse(localStorage.getItem("cases")) || [];
+  const { error } = await supabaseClient
+    .from("cases")
+    .update({ remarks: remarkText })
+    .eq("id", id);
 
-  let remarkText = document.getElementById("remarks-" + index).value;
-
-  cases[index].remarks = remarkText;
-
-  localStorage.setItem("cases", JSON.stringify(cases));
+  if (error) {
+    alert("Error saving remarks");
+    console.log(error);
+    return;
+  }
 
   alert("Remarks saved successfully");
-
 }
