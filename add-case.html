@@ -22,8 +22,8 @@
   <div class="container">
     <h3>Add New Case</h3>
 
-    <label>Case Number</label>
-    <input type="text" id="caseNumber" />
+    <label>Case Number <span style="color:red">*</span></label>
+    <input type="text" id="caseNumber" pattern="[0-9/]+" placeholder="Example: 1234/567" />
 
     <label>Department</label>
     <select id="department">
@@ -74,7 +74,7 @@
       <option>अन्य</option>
     </select>
 
-    <label>Next Hearing Date</label>
+    <label>Next Hearing Date <span style="color:red">*</span></label>
     <input type="date" id="hearingDate" />
 
     <label>Case Copy (PDF)</label>
@@ -88,7 +88,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="js/app.js"></script>
   <footer>
-    <p>District Court Hearing Monitoring System, Amroha | Developed for Administrative Use by NIC</p>
+    <p>District Court Hearing Monitoring System, Amroha | Developed by NIC | 2026</p>
   </footer>
 </body>
 

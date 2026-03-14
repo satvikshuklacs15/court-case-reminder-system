@@ -1,3 +1,7 @@
+if (sessionStorage.getItem("loggedIn") !== "true" && window.location.pathname !== "/index.html") {
+  window.location.href = "index.html";
+}
+
 const supabaseUrl = "https://jebiygsmwibdtlbrrjjx.supabase.co";
 const supabaseKey = "sb_publishable_RhnyqXE5j3I3nD8I4_OYNQ_PUbTX6hO";
 
@@ -8,7 +12,17 @@ const supabaseClient = createClient(supabaseUrl, supabaseKey);
 let sortAscending = true;
 
 window.login = function () {
-  window.location.href = "dashboard.html";
+  let username = document.getElementById("username").value;
+  let password = document.getElementById("password").value;
+
+  if (username === "admin" && password === "admin123") {
+      sessionStorage.setItem("loggedIn", "true");
+      window.location.href = "dashboard.html";
+  } 
+  else {
+      alert("Invalid Username or Password");
+  }
+
 };
 
 window.onload = async function () {
@@ -43,7 +57,8 @@ window.onload = async function () {
           .getPublicUrl(c.file_url);
 
         row.insertCell(3).innerHTML =
-          `<a href="${data.publicUrl}" target="_blank">Download PDF</a>`;
+          `<a href="${data.publicUrl}" target="_blank">View</a> |
+           <a href="${data.publicUrl}" download>Download</a>`;
       } else {
         row.insertCell(3).innerText = "No File";
       }
@@ -120,7 +135,13 @@ async function addCase() {
     alert("Please fill all required fields");
     return;
   }
-  
+  const pattern = /^[0-9/]+$/;
+
+  if (!pattern.test(caseNumber)) {
+    alert("Case number can contain only numbers and '/' only.\nExample: 1234/567");
+    return;
+  }
+
   let fileInput = document.getElementById("caseFile");
   let file = fileInput.files[0];
 
@@ -130,7 +151,7 @@ async function addCase() {
   if (file) {
     const { data, error } = await supabaseClient.storage
       .from("case-files")
-     .upload("cases/" + Date.now() + "_" + file.name, file);
+      .upload("cases/" + Date.now() + "_" + file.name, file);
 
     if (error) {
       alert("File upload failed");
@@ -193,7 +214,8 @@ window.addEventListener("load", async function () {
           .getPublicUrl(c.file_url);
 
         row.insertCell(3).innerHTML =
-          `<a href="${data.publicUrl}" target="_blank">Download PDF</a>`;
+          `<a href="${data.publicUrl}" target="_blank">View</a> |
+           <a href="${data.publicUrl}" download>Download</a>`;
       } else {
         row.insertCell(3).innerText = "No File";
       }
