@@ -307,3 +307,63 @@ async function saveRemarks(id) {
 
   alert("Remarks saved successfully");
 }
+
+async function downloadCSV() {
+
+  let { data: cases, error } = await supabaseClient
+    .from("cases")
+    .select("*");
+
+  if (error) {
+    alert("Error downloading data");
+    return;
+  }
+
+  let csv = "Case Number,Department,Hearing Date,Remarks\n";
+
+  cases.forEach(c => {
+    csv += `${c.case_number},${c.department},${c.hearing_date},${c.remarks || ""}\n`;
+  });
+
+  let blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  let url = window.URL.createObjectURL(blob);
+
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "all_cases.csv";
+  a.click();
+}
+
+async function downloadUpcomingCSV() {
+
+  let { data: cases, error } = await supabaseClient
+    .from("cases")
+    .select("*");
+
+  if (error) {
+    alert("Error downloading data");
+    return;
+  }
+
+  let today = new Date();
+  let csv = "Case Number,Department,Hearing Date\n";
+
+  cases.forEach(c => {
+
+    let hearing = new Date(c.hearing_date);
+    let diffDays = Math.ceil((hearing - today) / (1000*60*60*24));
+
+    if (diffDays <= 7 && diffDays >= 0) {
+      csv += `${c.case_number},${c.department},${c.hearing_date}\n`;
+    }
+
+  });
+
+  let blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  let url = window.URL.createObjectURL(blob);
+
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "upcoming_hearings.csv";
+  a.click();
+}
