@@ -1,7 +1,7 @@
-const currentPage = window.location.pathname.split("/").pop();
-if (sessionStorage.getItem("loggedIn") !== "true" && window.location.pathname !== "/index.html") {
-  window.location.href = "index.html";
-}
+// const currentPage = window.location.pathname.split("/").pop();
+// if (sessionStorage.getItem("loggedIn") !== "true" && window.location.pathname !== "/index.html") {
+//   window.location.href = "index.html";
+// }
 
 const supabaseUrl = "https://jebiygsmwibdtlbrrjjx.supabase.co";
 const supabaseKey = "sb_publishable_RhnyqXE5j3I3nD8I4_OYNQ_PUbTX6hO";
