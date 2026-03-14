@@ -1,3 +1,4 @@
+const currentPage = window.location.pathname.split("/").pop();
 if (sessionStorage.getItem("loggedIn") !== "true" && window.location.pathname !== "/index.html") {
   window.location.href = "index.html";
 }
