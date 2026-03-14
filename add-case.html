@@ -1,52 +1,95 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Add Case</title>
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
 
-  <body>
-    <div class="navbar">
-      <h2>Court Case Reminder System</h2>
+<head>
+  <title>Add Case</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
 
-      <div class="menu">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="add-case.html">Add Case</a>
-        <a href="upcoming.html">Upcoming Hearings</a>
-        <a href="index.html">Logout</a>
-      </div>
+<body>
+  <div class="navbar">
+    <h2>Court Case Reminder System</h2>
+
+    <div class="menu">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="add-case.html">Add Case</a>
+      <a href="upcoming.html">Upcoming Hearings</a>
+      <a href="index.html">Logout</a>
     </div>
+  </div>
 
-    <div class="container">
-      <h3>Add New Case</h3>
+  <div class="container">
+    <h3>Add New Case</h3>
 
-      <label>Case Number</label>
-      <input type="text" id="caseNumber" />
+    <label>Case Number</label>
+    <input type="text" id="caseNumber" />
 
-      <label>Department</label>
-      <select id="department">
-        <option>Revenue</option>
-        <option>Police</option>
-        <option>Education</option>
-        <option>Health</option>
-        <option>Public Works</option>
-      </select>
+    <label>Department</label>
+    <select id="department">
+      <option value="">-- विभाग चुनें --</option>
 
-      <label>Next Hearing Date</label>
-      <input type="date" id="hearingDate" />
+      <option>आबकारी</option>
+      <option>उधान एवं खाद्य प्रसंस्करण</option>
+      <option>ऊर्जा</option>
+      <option>कृषि विभाग</option>
+      <option>खादी एवं ग्रामोधोग</option>
+      <option>खाद्द सुरक्षा एवं औषधि प्रशासन विभाग</option>
+      <option>खाद्ध एवं रसद विभाग</option>
+      <option>खेलकूद</option>
+      <option>ग्रह एंव गोपन/कारागार प्रशासन एवं सुधार</option>
+      <option>ग्रामीण अभियंत्रण विभाग</option>
+      <option>ग्राम्य विकास</option>
+      <option>चिकित्सा स्वास्थ्य एवं परिवार कल्याण</option>
+      <option>चीनी उधोग एवं गन्ना विकास</option>
+      <option>दुग्ध विकास</option>
+      <option>नगर विकास तथा नगरीय रोजगार एवं गरीबी</option>
+      <option>नियोजन एवं राज्य योजना आयोग</option>
+      <option>पंचायती राज</option>
+      <option>परिवहन</option>
+      <option>पशुधन</option>
+      <option>मत्स्य उत्पादन</option>
+      <option>महिला एवं बाल विकास</option>
+      <option>युवा कल्याण</option>
+      <option>राजस्व</option>
+      <option>लघु सिचाई एवं भूगर्भ जल</option>
+      <option>लोक निर्माण</option>
+      <option>वन विभाग</option>
+      <option>दिव्यांगजन सशक्तिकरण विभाग</option>
+      <option>वित्त</option>
+      <option>श्रम विभाग</option>
+      <option>समाज कल्याण</option>
+      <option>सहकारिता</option>
+      <option>सिचाई एवं जल संसाधन विभाग</option>
+      <option>स्टाम एवं रजिस्ट्रेशन</option>
+      <option>स्थानीय निधि लेखा परीक्षा विभाग</option>
+      <option>राज्य कर विभाग</option>
+      <option>होमियोपैथी सेवाये उ. प्र.</option>
+      <option>जल निगम</option>
+      <option>उच्च शिक्षा</option>
+      <option>प्राविधिक शिक्षा</option>
+      <option>बेसिक शिक्षा</option>
+      <option>माध्यमिक शिक्षा</option>
+      <option>व्यवसायिक शिक्षा</option>
+      <option>अन्य</option>
+    </select>
 
-      <label>Case Copy (PDF)</label>
-      <input type="file" id="caseFile" />
+    <label>Next Hearing Date</label>
+    <input type="date" id="hearingDate" />
 
-      <br /><br />
+    <label>Case Copy (PDF)</label>
+    <input type="file" id="caseFile" />
 
-      <button onclick="addCase()">Submit Case</button>
-    </div>
+    <br /><br />
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script src="js/app.js"></script>
-    <footer>
-      <p>District Court Monitoring System | Developed for Administrative Use</p>
-    </footer>
-  </body>
+    <button onclick="addCase()">Submit Case</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="js/app.js"></script>
+  <footer>
+    <p>District Court Hearing Monitoring System, Amroha | Developed for Administrative Use by NIC</p>
+  </footer>
+</body>
+
 </html>
